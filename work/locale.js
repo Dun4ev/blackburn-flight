@@ -1,7 +1,7 @@
 const russian = {
   "Created by Andrej Dunaev.": "Автор проекта - Андрей Дунаев.",
   "About this project": "О проекте",
-  "Created by Andrej Dunaev with GPT-6 in OpenAI Codex. The model was built in Blender and the flight scene runs in Three.js.": "Андрей Дунаев создал проект с помощью GPT-6 в OpenAI Codex. Модель сделана в Blender, полетная сцена работает на Three.js.",
+  "Created by Andrej Dunaev. Built with GPT-6.2 Astra. The model was built in Blender and the flight scene runs in Three.js.": "Андрей Дунаев создал проект с помощью GPT-6.2 Astra в OpenAI Codex. Модель сделана в Blender, полетная сцена работает на Three.js.",
   "Open / close flight map": "Открыть / закрыть полетную карту",
   "Flight archive": "Летный архив",
   "Archive sections": "Разделы архива",

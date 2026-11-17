@@ -6,7 +6,7 @@ Fly a 1912 Blackburn Type D through four rings to discover photographs and stori
 
 ![Blackburn approaching a ring in the tower district](assets/flight-preview.jpg)
 
-Built by Andrej Dunaev using GPT-6 in OpenAI Codex, Blender and Three.js. This is an interpretive reconstruction with a fictional landscape and simplified flight dynamics. The [photograph credits](assets/history/CREDITS.md) identify the photographers and the licences of the images.
+Built with GPT-6.2 Astra. Andrej Dunaev created the project using OpenAI Codex, Blender and Three.js. This is an interpretive reconstruction with a fictional landscape and simplified flight dynamics. The [photograph credits](assets/history/CREDITS.md) identify the photographers and the licences of the images.
 
 ## О симуляторе
 
