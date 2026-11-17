@@ -31,6 +31,32 @@ export function chapterIndex(hash) {
 }
 export const chapterHash = index => '#history/'+chapters[index].id;
 
+function rcModelFeature() {
+  const card = node('article', 'journal-model');
+  const figure = node('figure', 'journal-model-figure');
+  const image = node('img');
+  image.src = photoUrl('assets/history/blackburn-blender.jpg');
+  image.width = 760;
+  image.height = 451;
+  image.loading = 'lazy';
+  image.alt = choose('Three-quarter view of the digital Blackburn with cream fabric wings and wire-spoked wheels.',
+    'Цифровая модель Blackburn вполоборота, с полотняными крыльями и колесами со спицами.');
+  figure.append(image, node('figcaption', 'journal-caption',
+    choose('Our digital reconstruction of the 1912 aircraft, rendered in Blender.',
+      'Наша цифровая реконструкция самолета 1912 года. Изображение создано в Blender.')));
+
+  const body = node('div', 'journal-model-body');
+  body.append(node('p', 'journal-kicker', choose('RCM&E · 25 January 2012', 'RCM&E · 25 января 2012')),
+    node('h2', 'journal-model-title', choose('A radio-controlled Blackburn', 'Радиоуправляемый Blackburn')),
+    node('p', 'journal-prose', choose(
+      'Alex Whittaker describes building and flying his 56-inch-span model. Its thin wing relies on bracing made from fishing trace wire. His plan first appeared in 2002.',
+      'Алекс Уиттакер рассказывает, как построил и облетал модель с размахом крыла 1,42 м. Тонкое крыло держат расчалки из проволоки для рыболовных поводков. Чертеж впервые опубликовали в 2002 году.')),
+    link(choose('Read in RCM&E', 'Читать в RCM&E'),
+      'https://www.modelflying.co.uk/blackburn-monoplane/', 'journal-fly journal-model-link'));
+  card.append(figure, body);
+  return card;
+}
+
 export function renderHistory({index,visited,onChapter,onFly,onModel,canFly}){
   const page=document.getElementById('historyView'), chapter=chapters[index];
   const story=chapter[lang()];
@@ -77,7 +103,7 @@ export function renderHistory({index,visited,onChapter,onFly,onModel,canFly}){
   body.append(sources);
   const fly=button(choose('Fly to this ring →','Полететь к кольцу →'),()=>onFly(index),'journal-fly');
   fly.disabled=!canFly;body.append(fly);
-  entry.append(body);shell.append(entry);
+  entry.append(body);shell.append(entry, rcModelFeature());
 
   const shelves=node('section','journal-library');
   const shelfHead=node('div','shelf-head');

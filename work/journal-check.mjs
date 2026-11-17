@@ -1,12 +1,72 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { chapters } from './heritage.js';
 
 const work=path.dirname(fileURLToPath(import.meta.url));
-const input=path.resolve(process.argv[2] || path.join(work,'../outputs/Blackburn-Flight.html'));
+const resourceOnly=process.argv[2]==='--resource-only';
+const input=process.argv[resourceOnly?3:2] || path.join(work,'../outputs/Blackburn-Flight.html');
 const firstStory=chapters[0];
+const magazineUrl='https://www.modelflying.co.uk/blackburn-monoplane/';
+const renderFile='assets/history/blackburn-blender.jpg';
+const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
+const renderHash=digest(await readFile(path.join(work,'..',renderFile)));
+
+async function assertModelArticle(frame,language){
+  const label=language==='ru'?'Читать в RCM&E':'Read in RCM&E';
+  const link=frame.locator('#historyView a[href="'+magazineUrl+'"]').and(frame.getByRole('link',{name:label,exact:true}));
+  await link.waitFor({state:'visible'});
+  await link.click({trial:true});
+  assert.equal((await link.innerText()).trim(),label);
+  const card=link.locator('xpath=ancestor::article[1]');
+  const image=card.locator('img');
+  await image.scrollIntoViewIfNeeded();
+  const encoded=await image.evaluate(async img=>{
+    await img.decode();
+    if(!img.naturalWidth||!img.naturalHeight||!img.alt.trim())throw Error('Missing image or alternative text');
+    return img.currentSrc;
+  });
+  const prefix='data:image/jpeg;base64,';
+  assert.ok(encoded.startsWith(prefix),'The card must embed its own JPEG');
+  assert.equal(digest(Buffer.from(encoded.slice(prefix.length),'base64')),renderHash,'Embedded image differs from the Blender render');
+  assert.match(await card.locator('figcaption').innerText(),/Blender/);
+  assert.equal(await card.locator('[download], a[href*=".pdf" i], iframe, embed, object').count(),0,'The model article should link to the publisher, without a PDF');
+  assert.equal(await frame.locator('[href^="data:application/pdf" i], [src^="data:application/pdf" i], [type="application/pdf" i]').count(),0);
+  assert.ok(await frame.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'History overflows the viewport');
+}
+
+async function checkResourceRelease(browser,target){
+  const url=/^https?:\/\//.test(target)?new URL(target):pathToFileURL(path.resolve(target));
+  const isLocal=url.protocol==='file:';
+  for(const [width,height,isMobile] of [[1280,800,false],[390,844,true]]){
+    const context=await browser.newContext({viewport:{width,height},isMobile,hasTouch:isMobile,offline:isLocal});
+    try{
+      const page=await context.newPage();
+      const errors=[],requests=[];
+      if(isLocal)recordDiagnostics(page,errors,requests);
+      await page.goto(url.href,{waitUntil:'domcontentloaded'});
+      let frame=page.mainFrame();
+      if(url.hostname.endsWith('.itch.io')){
+        const game=page.locator('iframe[src*="itch.zone"], iframe[src*="itch.io/embed-upload"]').first();
+        if(!await game.count())await page.locator('button.load_iframe_btn').click();
+        await game.waitFor({state:'attached'});
+        frame=await (await game.elementHandle()).contentFrame();
+        assert.ok(frame,'No game frame on the itch.io page');
+      }
+      await frame.locator('#historyTab').click();
+      await frame.locator('#historyView').waitFor({state:'visible'});
+      for(const [id,language] of [['langEn','en'],['langRu','ru']]){
+        await frame.locator('#'+id).click();
+        await assertModelArticle(frame,language);
+      }
+      assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);
+      console.log(`PASS RCM&E ${width}×${height} · EN + RU · embedded JPEG ${renderHash.slice(0,12)} · no PDF in card`);
+    }finally{await context.close();}
+  }
+}
 
 async function assertWaypoint(page, number, language='en') {
   const map=page.locator('#trailMapButton');
@@ -128,8 +188,7 @@ function recordDiagnostics(page,errors,requests){
   page.on('request',request=>{if(/^https?:/.test(request.url()))requests.push(request.url());});
 }
 
-const browser=await chromium.launch({channel:'chrome',headless:true,args:['--enable-unsafe-swiftshader']});
-try {
+async function runJournal(browser){
   const context=await browser.newContext({viewport:{width:1280,height:800},offline:true});
   const page=await context.newPage(), errors=[], requests=[];
   recordDiagnostics(page,errors,requests);
@@ -183,11 +242,13 @@ try {
   }
   assert(await page.locator('.shelf-item[href*="youtube.com/watch"]').count()>0);
   assert(await page.locator('.shelf-kind').filter({hasText:/^Book$/}).count()>=2);
+  await assertModelArticle(page,'en');
   await page.locator('.timeline-item').nth(1).click();
   await page.waitForFunction(()=>document.querySelector('.journal-kicker').textContent.includes('Cockpit'));
   await page.screenshot({path:path.join(work,'test-journal.png')});
   await page.locator('#langRu').click();
   assert.equal(await page.locator('html').getAttribute('lang'),'ru');
+  await assertModelArticle(page,'ru');
   assert((await page.locator('.journal-story-title').textContent()).includes('крыл'));
   assert.equal(await page.locator('#clock').textContent(),stopped);
   await page.locator('#langEn').click();await page.locator('#simTab').click();
@@ -213,4 +274,10 @@ try {
   assert.equal(requests.length,0,'Unexpected network requests: '+requests.join(', '));
   assert.equal(errors.length,0,'Browser errors: '+errors.join(', '));
   console.log('PASS: default English, tower route traversed in trim, ring crossing, map selection, all four offline photographs, both languages, flight paused during reading, progress & locale persisted after reload, a persistent mini-map that retargets, EN/RU discovery cards with embedded photos and working chapter links, reset after a new flight, and clear touch HUD at 612×972, 390×844 and 844×390. No browser errors or external requests.');
-} finally {await browser.close();}
+}
+
+const browser=await chromium.launch({channel:'chrome',headless:true,args:['--enable-unsafe-swiftshader']});
+try{
+  if(resourceOnly)await checkResourceRelease(browser,input);
+  else await runJournal(browser);
+}finally{await browser.close();}

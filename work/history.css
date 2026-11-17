@@ -3,3 +3,39 @@ html:lang(ru) .journal h1.journal-title,html:lang(ru) .journal-story-title,html:
 @media(max-width:850px){.journal-entry{gap:24px}.journal-prose{font-size:14px}.shelf-item{grid-template-columns:1fr 15px}.shelf-kind{grid-column:1/-1}.timeline-item{padding-left:5px}}
 @media(max-width:640px){header{gap:6px}.section-tabs{gap:8px;margin-left:4px}.section-tabs a{font-size:12px}.header-tools{gap:0}.header-tools .plain{padding:0 4px}.lang-switch{margin-right:0}.journal{padding:23px 17px}.journal-head{padding-bottom:14px}.journal-count small{font-size:9px}.timeline{grid-template-columns:1fr 1fr;margin-bottom:19px}.timeline-item{min-height:37px}.journal-entry{grid-template-columns:1fr;gap:18px}.journal-story-title{margin-bottom:11px}.journal-photo img{max-height:300px}.shelf-list{grid-template-columns:1fr}.shelf-head{align-items:flex-start;flex-direction:column;gap:3px}.shelf-item{grid-template-columns:60px minmax(0,1fr) 14px}.shelf-kind{grid-column:auto}body[data-mode=flight] header .brand span:last-child{display:none}body[data-section=history] header .brand span:last-child{display:inline}body[data-mode=flight] #toHangar span{display:none}.start-group button{white-space:nowrap}}
 @media(max-width:435px){header{padding-inline:9px}.brand{font-size:14px;gap:5px}.wings i:nth-child(1){width:20px}.wings i:nth-child(2){width:16px}.wings i:nth-child(3){width:11px}.section-tabs{gap:4px}.section-tabs a{padding-inline:2px}.lang-switch button{padding:4px 3px}.header-tools .iconbtn{width:27px}}
+
+.journal-model {
+  display: grid;
+  grid-template-columns: minmax(200px, .75fr) minmax(0, 1.25fr);
+  align-items: center;
+  gap: clamp(22px, 3.5vw, 56px);
+  padding: clamp(16px, 2vw, 30px);
+  margin-top: clamp(28px, 4vw, 60px);
+  border: 1px solid var(--line);
+  background: #eae3d5;
+}
+.journal-model-figure { margin: 0; }
+.journal-model-figure img { display: block; width: 100%; height: auto; }
+.journal-model-figure .journal-caption { padding-top: 6px; }
+.journal-model-body { max-width: 60ch; }
+.journal-model-title {
+  margin: 9px 0 12px;
+  font: 400 clamp(32px, 3.4vw, 52px)/1.03 var(--display);
+  letter-spacing: -.025em;
+}
+html:lang(ru) .journal-model-title {
+  font: 500 clamp(24px, 2.5vw, 38px)/1.12 var(--sans);
+  letter-spacing: -.04em;
+}
+.journal-model-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+  margin-top: 2px;
+  background: var(--paper);
+}
+.journal-model-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .journal-model { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}

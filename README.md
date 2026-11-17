@@ -1,14 +1,16 @@
 # Blackburn Type D
 
-[Fly in your browser](https://blackburn-flight.andreydunaev1.workers.dev/) · [Download the offline simulator](https://github.com/Dun4ev/blackburn-flight/releases/latest/download/Blackburn-Flight.html) · [Andrej Dunaev’s portfolio](https://dun4ev.com/)
+[Fly in your browser](https://blackburn-flight.pages.dev/) · [Download the offline simulator](https://github.com/Dun4ev/blackburn-flight/releases/latest/download/Blackburn-Flight.html) · [Andrej Dunaev’s portfolio](https://dun4ev.com/)
 
 Fly a 1912 Blackburn Type D through four rings to discover photographs and stories of the surviving aeroplane. Start in the tower district, follow the mini-map, and select a chapter when you want to pause and read. English and Russian, with keyboard and touch controls.
 
-[Start in flight on approach to the first ring](https://blackburn-flight.andreydunaev1.workers.dev/?fly=1).
+[Start in flight on approach to the first ring](https://blackburn-flight.pages.dev/?fly=1).
 
 ![Blackburn approaching a ring in the tower district](assets/flight-preview.jpg)
 
 Built with GPT-6.2 Astra. Andrej Dunaev created the project using OpenAI Codex, Blender and Three.js. This is an interpretive reconstruction with a fictional landscape and simplified flight dynamics. The [photograph credits](assets/history/CREDITS.md) identify the photographers and the licences of the images.
+
+[Read about Alex Whittaker’s flying scale model in RCM&E](https://www.modelflying.co.uk/blackburn-monoplane/). The History card is illustrated with our Blender reconstruction.
 
 ## О симуляторе
 
@@ -36,7 +38,7 @@ npm run build
 
 Сборка использует готовый GLB и записывает `outputs/Blackburn-Flight.html`. Для записи в другой файл передайте `--output`, например `npm run build -- --output work/flight-preview.html`.
 
-Для публикации на статическом хостинге выполните `npm run build:site`. В `dist/` будут `index.html` и изображение для предпросмотра ссылки. Процесс публикации на Cloudflare Workers Static Assets использует только этот каталог.
+Для публикации на статическом хостинге выполните `npm run build:site`. В `dist/` будут `index.html` и изображение для предпросмотра ссылки. Cloudflare Pages собирает этот каталог из ветки `main` командой `npm run build:site` при каждом обновлении репозитория.
 
 ## Проверка
 
