@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f0e5"><meta name="color-scheme" content="light">
+<title>Blackburn Type D • Flight archive</title>
+<meta name="description" content="Fly a 1912 Blackburn Type D in your browser. Follow four rings to uncover photographs and stories of Britain’s pioneering monoplane.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fly the 1912 Blackburn Type D">
+<meta property="og:description" content="Pilot a wooden monoplane through four rings, then explore the real aircraft in photographs and stories.">
+<meta property="og:url" content="https://blackburn-flight.andreydunaev1.workers.dev/">
+<meta property="og:image" content="https://blackburn-flight.andreydunaev1.workers.dev/flight-preview.jpg">
+<meta property="og:image:alt" content="A player's-eye view of the Blackburn monoplane flying between towers in the browser simulator.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:,">
+<style>__FONTS__
+__CSS__</style>
+</head>
+<body data-mode="hangar" data-section="sim">
+<header>
+  <div class="brand"><span class="wings" aria-hidden="true"><i></i><i></i><i></i></span><span>Flight archive</span></div>
+  <nav class="section-tabs" aria-label="Archive sections"><a id="simTab" href="#flight" aria-current="page">Flight</a><a id="historyTab" href="#history">History</a></nav>
+  <div class="header-tools">
+    <div class="lang-switch" role="group" aria-label="Language"><button id="langEn" lang="en" title="English" aria-label="English" aria-pressed="true">EN</button><button id="langRu" lang="ru" title="Русский" aria-label="Русский" aria-pressed="false">RU</button></div>
+    <button id="toHangar" class="flight-only plain" title="Return to the model and end this flight">__I_back__<span>Back to model</span></button>
+    <button id="help" class="plain" aria-label="Controls" title="Controls">__I_key__<span>Controls</span></button>
+    <button id="sound" class="iconbtn" aria-label="Enable sound" title="Enable sound" aria-pressed="false">__I_mute__</button>
+    <button id="fullscreen" class="iconbtn" aria-label="Full screen" title="Full screen">__I_full__</button>
+  </div>
+</header>
+<main id="simMain">
+<section class="viewport" id="viewport" aria-label="Interactive 3D scene">
+  <canvas id="view" tabindex="0" aria-label="3D monoplane. Drag to orbit."></canvas>
+  <div class="scene-top hangar-only">
+    <div class="switch-dark" role="group" aria-label="Airframe view">
+      <button id="skin" aria-pressed="true">Fabric</button>
+      <button id="frame" aria-pressed="false">Airframe</button>
+    </div>
+  </div>
+  <div class="viewer-foot hangar-only"><span class="drag-hint">__I_orbit__<span class="desktop-hint">Drag to orbit · Scroll to zoom</span><span class="touch-hint">Drag to orbit · Pinch to zoom</span></span><button id="orbitReset" class="viewer-reset" title="Reset viewing angle" aria-label="Reset viewing angle">__I_reset__</button></div>
+  <div id="loading" role="status">Preparing the model…</div>
+  <div class="flight-only flight-top">
+    <div class="flight-id"><div class="flight-name">Blackburn <em>Type D</em></div><div class="flight-state"><i></i><span id="stateText">Airborne</span><span class="time" id="clock">00:00</span></div></div>
+    <div class="flight-tools"><button id="cameraBtn" title="Change camera (C)">__I_camera__<span id="cameraText">Chase</span></button><button id="pause" title="Pause (P)" aria-label="Pause">__I_pause__</button></div>
+  </div>
+  <div class="flight-only hint-box" id="advice" role="status"></div>
+  <div class="flight-only instruments" aria-label="Flight instruments">
+    <div class="readout"><span>Airspeed</span><div><b id="speed">78</b><small>km/h</small></div></div>
+    <div class="readout"><span>Above ground</span><div><b id="alt">120</b><small>m</small></div></div>
+    <div class="readout"><span>Heading</span><div><b id="heading">000</b><small>°</small></div></div>
+    <div class="readout gas"><label for="throttle">Throttle <output id="gasNum">65%</output></label><input type="range" id="throttle" min="0" max="100" step="1" aria-label="Throttle percentage"></div>
+  </div>
+  <div class="flight-only touch-control"><div class="joystick" id="stick" aria-label="Touch flight stick"><i></i><b></b></div></div>
+  <div id="overlay" hidden><div class="pause-card"><strong id="overlayTitle"></strong><p id="overlayText"></p><button class="primary" id="overlayGo">Resume</button><button class="subtle" id="restart">Restart flight</button><button class="subtle" id="exitFlight">Return to model</button></div></div>
+</section>
+<aside id="panel">
+  <div class="sheet">
+    <div class="origin"><span class="bull"></span>Great Britain <i></i> 1912</div>
+    <h1>Blackburn<br><em>Type D</em></h1>
+    <p class="intro">Robert Blackburn’s single-seat monoplane, built around a timber frame with fabric-covered wings and an open cockpit.</p>
+    <dl class="specs"><div><dt>Wingspan</dt><dd>9.72 m</dd></div><div><dt>Length</dt><dd>8.00 m</dd></div><div><dt>Engine</dt><dd>Gnôme Omega <i>·</i> 50 hp</dd></div></dl>
+    <a id="readStory" class="history" href="#history">Explore the aircraft’s history __I_expand__</a>
+    <section class="launch" aria-label="Flight setup">
+      <div class="launch-title">Start location</div>
+      <div class="start-group" role="group" aria-label="Select departure">
+        <button id="startDistrict" aria-pressed="true">Tower district</button><button id="startAir" aria-pressed="false">In the air</button><button id="startGround" aria-pressed="false">Runway</button>
+      </div>
+      <p id="startDescription" aria-live="polite">Approach the main avenue between the towers.</p>
+      <button id="launch" class="primary" disabled>Start flight __I_arrow__</button>
+    </section>
+  </div>
+</aside>
+</main>
+<main id="historyView" hidden aria-label="Aircraft history"></main>
+<dialog id="helpDialog"><div class="dialog-head"><h2>Controls</h2><button class="dialog-close" aria-label="Close">__I_x__</button></div>
+<p>The tower approach lines you up with the main avenue. Follow it straight through or turn at a crossroads. To take off from the runway, apply full throttle and ease the stick back as speed builds.</p>
+<dl class="keys"><div><dt>Pitch up / down</dt><dd><kbd>↓</kbd> <kbd>↑</kbd></dd></div><div><dt>Bank left / right</dt><dd><kbd>←</kbd> <kbd>→</kbd></dd></div><div><dt>Increase / decrease throttle</dt><dd><kbd>W</kbd> <kbd>S</kbd></dd></div><div><dt>Rudder left / right</dt><dd><kbd>Q</kbd> <kbd>E</kbd></dd></div><div><dt>Open / close flight map</dt><dd><kbd>M</kbd></dd></div><div><dt>Change camera</dt><dd><kbd>C</kbd></dd></div><div><dt>Pause / resume</dt><dd><kbd>P</kbd></dd></div></dl>
+<p class="small-copy">On a touch screen, pull the stick down to raise the nose and sideways to bank. Use the slider for throttle. For landing, ease off the throttle and level out before touching down.</p>
+<p class="small-copy"><span>Created by Andrej Dunaev.</span> <a href="https://dun4ev.com/" target="_blank" rel="noopener noreferrer">dun4ev.com __I_expand__</a></p>
+</dialog>
+<dialog id="aboutDialog"><div class="dialog-head"><h2>About the model</h2><button class="dialog-close" aria-label="Close">__I_x__</button></div>
+<h3>Digital reconstruction</h3><p>Dimensions follow the museum record. The shapes and fittings were reconstructed from photographs and Alex Whittaker’s model-aircraft drawing. The airframe view interprets the internal structure. The wing-warping deflection is approximate.</p>
+<p>The landscape and its story stops are fictional. Flight dynamics and engine audio are simplified for exploring and landing.</p>
+<a href="https://www.shuttleworth.org/discover/collection/aircraft/blackburn-monoplane" target="_blank" rel="noopener noreferrer">Shuttleworth Collection aircraft record __I_expand__</a>
+<h3>About this project</h3>
+<p>Created by Andrej Dunaev with GPT-6 in OpenAI Codex. The model was built in Blender and the flight scene runs in Three.js.</p>
+<a href="https://dun4ev.com/" target="_blank" rel="noopener noreferrer">dun4ev.com __I_expand__</a> &nbsp;·&nbsp; <a href="https://github.com/Dun4ev/blackburn-flight" target="_blank" rel="noopener noreferrer">GitHub __I_expand__</a>
+</dialog>
+<script id="historyPhotos" type="application/json">__HISTORY_PHOTOS__</script>
+<script id="aircraftData" type="application/octet-stream">__MODEL__</script>
+<script>__BUNDLE__</script></body></html>

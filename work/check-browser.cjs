@@ -1,0 +1,47 @@
+const {chromium}=require('playwright');
+const path=require('node:path'),assert=require('node:assert/strict');
+const {pathToFileURL}=require('node:url');
+const root=__dirname,file=pathToFileURL(process.argv[2] ? path.resolve(process.argv[2]) : path.join(root,'../outputs/Blackburn-Flight.html')).href;
+(async()=>{
+ const browser=await chromium.launch({channel:'chrome',headless:true,args:['--enable-unsafe-swiftshader']});
+ try{
+  const ctx=await browser.newContext({viewport:{width:1440,height:870},offline:true});
+  const page=await ctx.newPage();const errors=[],requests=[];page.on('pageerror',e=>errors.push(String(e)));
+  page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+  page.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});page.setDefaultTimeout(18000);
+  await page.goto(file);await page.locator('#launch:enabled').waitFor();await page.evaluate(()=>document.fonts.ready);
+  if(await page.locator('#langRu').count())await page.locator('#langRu').click();
+  assert(await page.evaluate(()=>document.fonts.check('14px Golos','Кабина')&&document.fonts.check('40px Instrument','Blackburn')));
+  const shot=name=>page.screenshot({path:path.join(root,name+'.png')});
+  await shot('hangar-final');await page.locator('#frame').click();await page.waitForTimeout(230);
+  assert.equal(await page.locator('#frame').getAttribute('aria-pressed'),'true');await shot('frame-final');
+  await page.mouse.move(490,415);await page.mouse.down();await page.mouse.move(660,465,{steps:7});await page.mouse.up();await page.mouse.wheel(0,-110);
+  await page.locator('#orbitReset').click();await page.locator('#skin').click();
+  await page.locator('#readStory').click();await page.locator('#historyView').waitFor({state:'visible'});
+  await page.locator('#simTab').click();await page.locator('#simMain').waitFor({state:'visible'});
+  await page.locator('#startAir').click();await page.locator('#launch').click();await page.waitForFunction(()=>document.body.dataset.mode==='flight'&&document.querySelector('#clock').textContent!=='00:00');
+  await page.keyboard.down('ArrowRight');await page.waitForFunction(()=>Number(document.querySelector('#heading').textContent)>5);await page.keyboard.up('ArrowRight');
+  await page.keyboard.down('ArrowDown');await page.keyboard.down('KeyW');await page.waitForFunction(()=>Number(document.querySelector('#alt').textContent)>126);await page.keyboard.up('ArrowDown');await page.keyboard.up('KeyW');await shot('air-final');
+  const telemetry=await page.locator('.instruments').innerText();await page.keyboard.press('KeyC');assert.equal(await page.locator('#cameraText').textContent(),'Из кабины');await shot('cockpit-final');
+  await page.keyboard.press('KeyC');assert.equal(await page.locator('#cameraText').textContent(),'Сбоку');await shot('side-final');
+  await page.keyboard.press('KeyP');assert(await page.locator('#overlay').isVisible());const time=await page.locator('#clock').textContent();await page.waitForTimeout(350);assert.equal(await page.locator('#clock').textContent(),time);await page.locator('#overlayGo').click();
+  await page.locator('#help').click();assert(await page.locator('#helpDialog').isVisible());await page.keyboard.press('Escape');await page.locator('#sound').click();assert.equal(await page.locator('#sound').getAttribute('aria-pressed'),'true');
+  await page.locator('#toHangar').click();await page.locator('#startGround').click();await page.locator('#launch').click();assert.equal(await page.locator('#stateText').textContent(),'На земле');
+  await shot('runway-final');await page.locator('#throttle').fill('100');await page.keyboard.down('ArrowDown');
+  await page.waitForFunction(()=>document.querySelector('#stateText').textContent==='В полете',null,{timeout:90000});await page.keyboard.up('ArrowDown');
+  console.log('OFFLINE DESKTOP PASS. Takeoff time',await page.locator('#clock').textContent(),'telemetry in flight',telemetry.replaceAll('\n',' '));
+  await ctx.close();
+  const mobile=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true,deviceScaleFactor:1,offline:true});
+  const mp=await mobile.newPage();mp.on('pageerror',e=>errors.push(String(e)));mp.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});
+  await mp.goto(file);await mp.locator('#launch:enabled').waitFor();await mp.evaluate(()=>document.fonts.ready);
+  if(await mp.locator('#langRu').count())await mp.locator('#langRu').tap();
+  await mp.screenshot({path:path.join(root,'mobile-final.png'),fullPage:true});
+  assert(await mp.evaluate(()=>document.documentElement.scrollWidth===innerWidth));
+  await mp.locator('#startAir').tap();await mp.locator('#launch').tap();await mp.locator('#stick').waitFor();await mp.waitForFunction(()=>document.querySelector('#clock').textContent!=='00:00');
+  const b=await mp.locator('#stick').boundingBox();const px=b.x+b.width/2,py=b.y+b.height/2;const cdp=await mp.context().newCDPSession(mp);
+  const point=(x,y)=>[{x,y,id:1,radiusX:4,radiusY:4,force:1}];
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:point(px,py)});await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:point(px+30,py+8)});
+  await mp.waitForFunction(()=>Number(document.querySelector('#heading').textContent)>4);await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  await mp.screenshot({path:path.join(root,'mobile-flight.png')});await mobile.close();console.log('MOBILE TOUCH PASS');console.log('External HTTP requests',JSON.stringify(requests),'Browser errors',JSON.stringify(errors));assert.equal(requests.length,0);assert.equal(errors.length,0);
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});

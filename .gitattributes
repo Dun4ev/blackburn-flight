@@ -1,0 +1,3 @@
+outputs/Blackburn-Flight.html -diff linguist-generated=true
+*.blend binary
+*.glb binary

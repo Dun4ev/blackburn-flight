@@ -1,0 +1,31 @@
+#trailMapButton.mini-map{
+  position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(17px,env(safe-area-inset-bottom));
+  width:clamp(154px,16vw,183px);display:block;padding:0;overflow:hidden;
+  border:1px solid #605e4ee6;border-radius:4px;background:#eee8d6;color:#312e25;
+  box-shadow:0 2px 10px #2230274d,0 0 0 1px #fff4d548;
+  font:500 12px/1.15 var(--sans,Golos,Arial,sans-serif);text-align:left;pointer-events:auto;touch-action:manipulation;
+}
+#trailMapButton.mini-map[hidden],body:not([data-mode=flight]) #trailMapButton.mini-map{display:none}
+#trailMapButton.mini-map:hover{border-color:#72432b;box-shadow:0 2px 12px #22302769,0 0 0 1px #e7c095a8}
+#trailMapButton.mini-map:focus-visible{outline:3px solid #e8a56f;outline-offset:2px}
+.mini-map .mm-picture{position:relative;display:block;aspect-ratio:1.65;background:#e7e5ce;border-bottom:1px solid #bbac8f}
+.mini-map .mm-picture canvas{display:block;height:100%;width:100%}
+.mini-map .mm-expand{position:absolute;right:4px;top:4px;width:13px;height:13px;color:#514f42;pointer-events:none;background:#eae6ced9;border-radius:2px}
+.mini-map .mm-text{display:block;padding:4px 7px 5px;background:#f1ebda}
+.mini-map .mm-line{display:flex;align-items:center;gap:5px;min-width:0}
+.mini-map .mm-number{display:grid;place-items:center;min-width:16px;height:16px;border-radius:50%;background:#8a412c;color:#fff1db;font:600 10px/1 var(--sans,Golos,Arial,sans-serif)}
+.mini-map .mm-range{font-size:12px;font-weight:650;color:#342e25;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mini-map .mm-turn{margin-left:auto;font-size:10px;font-weight:550;color:#714431;white-space:nowrap}
+.mini-map .mm-altitude{display:block;min-height:11px;margin:2px 0 0 21px;color:#5b594b;font-size:9px;line-height:1.15;white-space:nowrap}
+.mini-map .mm-altitude.mm-adjust{color:#774631;font-weight:560}
+@media(max-width:830px){
+  #trailMapButton.mini-map{width:clamp(134px,27vw,168px);right:max(11px,env(safe-area-inset-right));bottom:max(80px,calc(env(safe-area-inset-bottom) + 70px))}
+}
+@media(max-width:480px){
+  #trailMapButton.mini-map{width:clamp(126px,34.5vw,145px);right:max(10px,env(safe-area-inset-right));bottom:max(76px,calc(env(safe-area-inset-bottom) + 65px))}
+  .mini-map .mm-text{padding:3px 5px 4px}.mini-map .mm-range{font-size:11px}
+}
+@media(max-height:510px) and (orientation:landscape) and (min-width:760px){
+  #trailMapButton.mini-map{width:132px;right:max(10px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom))}
+  .mini-map .mm-text{padding:3px 6px 4px}
+}

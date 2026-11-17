@@ -1,0 +1,22 @@
+{
+  "name": "blackburn-type-d-flight",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "python3 work/build.py",
+    "build:site": "python3 work/build.py --site",
+    "test": "node work/dynamics-check.mjs && node work/trail-check.mjs && node work/mini-map-check.mjs",
+    "test:browser": "node work/check-browser.cjs",
+    "test:journal": "node work/journal-check.mjs"
+  },
+  "devDependencies": {
+    "@fontsource/instrument-serif": "5.3.0",
+    "esbuild": "0.25.12",
+    "playwright": "1.65.0-alpha-2026-10-30",
+    "three": "0.186.1"
+  }
+}

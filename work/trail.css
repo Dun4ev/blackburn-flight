@@ -1,0 +1,43 @@
+/* The chapter stays outside the flight path and above the thumb controls. */
+.trail-hud{position:absolute;top:106px;left:24px;width:min(288px,72vw);pointer-events:none}
+.trail-story{position:relative;background:#f7f1e5;color:#29291f;border:1px solid #c4b7a0;border-radius:4px;box-shadow:0 4px 14px #1d201c40;overflow:hidden;pointer-events:auto}
+.trail-hud[hidden],.trail-story[hidden],.trail-film[hidden],#trailMapButton[hidden],#trailMap .trail-chapter[hidden]{display:none}
+#trailRead{display:grid;grid-template-columns:80px 1fr;align-items:stretch;width:100%;min-height:96px;text-align:left;padding:0;background:transparent;color:inherit}
+#trailRead:hover .trail-read-link{text-decoration:underline}
+#trailRead:focus-visible,.trail-dismiss:focus-visible,.trail-film:focus-visible{outline-offset:-3px}
+.trail-photo{position:relative;display:block;min-height:100%;background:#645e50;overflow:hidden}
+.trail-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.trail-photo small{position:absolute;bottom:0;left:0;right:0;padding:10px 4px 3px;color:white;background:linear-gradient(transparent,#181912a8);font-size:8px;line-height:1.2}
+.trail-story-copy{display:flex;flex-direction:column;gap:4px;padding:9px 10px}
+.trail-chapter-number{margin-right:16px;font-size:9px;font-weight:650;line-height:1.2;letter-spacing:.06em;color:#82442c;text-transform:uppercase}
+.trail-story-title{font-size:14px;line-height:1.15;font-weight:600;letter-spacing:-.025em}
+.trail-teaser{font-size:11px;line-height:1.34;color:#504d44}
+.trail-read-link,.trail-film{color:#81412b;font-size:10px;font-weight:550}
+.trail-read-link{margin-top:2px}
+.trail-film{display:block;border-top:1px solid #d4c8b3;text-decoration:underline;text-underline-offset:2px;padding:6px 10px}
+.trail-dismiss{position:absolute;top:0;right:0;display:grid;place-items:center;background:transparent;color:#6e6557;width:25px;height:25px;font-size:16px;line-height:1}
+.trail-dismiss:hover{background:#e9e1d2}
+.trail-chapter svg,.trail-close svg{width:18px;height:18px;flex:none}
+@media(max-width:480px){.trail-hud{width:min(254px,calc(100vw - 24px))}#trailRead{grid-template-columns:68px 1fr}.trail-story-title{font-size:13px}.trail-story-copy{gap:3px;padding:8px 9px}}
+@media(max-height:510px) and (orientation:landscape){.trail-hud{width:230px}#trailRead{grid-template-columns:58px 1fr;min-height:80px}.trail-story-copy{padding:6px 8px;gap:2px}.trail-story-title{font-size:12px}.trail-teaser{font-size:10px}}
+#trailMap{width:min(714px,calc(100% - 26px));height:fit-content;max-height:89dvh;overflow:auto;padding:clamp(16px,3.4vw,30px);line-height:1.45}
+.trail-top,.trail-details{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.trail-heading{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 12px}
+.trail-progress{font-size:11px;color:#80452f;font-variant-numeric:tabular-nums}
+.trail-top h2{font-size:clamp(23px,3vw,31px);letter-spacing:-.045em;line-height:1.05;margin:0}
+.trail-top .trail-sub{margin:7px 0 12px;color:#5d5a50;font-size:12px}
+.trail-close{border:1px solid #b9ae97;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;flex:none}
+.trail-chart{display:block;width:100%;height:clamp(218px,40vh,372px);border:1px solid #b7b29c;border-radius:3px;touch-action:manipulation;cursor:crosshair;background:#e9e4d1}
+.trail-selectors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:10px 0}
+.trail-option{min-height:40px;padding:6px 7px;line-height:1.15;display:flex;align-items:center;gap:5px;text-align:left;border:1px solid #c9c0aa;border-radius:3px;color:#514839;background:transparent;font-size:11px}
+.trail-option b{font-size:11px;color:#8a4631;font-variant-numeric:tabular-nums}
+.trail-option i{color:inherit;font-style:normal;font-weight:600;margin-left:auto}
+.trail-option[aria-pressed=true]{background:#88442e;color:#fff4df;border-color:#88442e}
+.trail-option[aria-pressed=true] b{color:#ffdfb2}
+.trail-details{align-items:center;border-top:1px solid #c9c0aa;padding:10px 0 12px;color:#403c34}
+.trail-detail-title{font-size:14px;font-weight:570;display:block}
+.trail-metrics{font-size:11px;color:#625a4c;display:block;margin-top:3px;font-variant-numeric:tabular-nums}
+.trail-chapter{color:#843f29;display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;padding:9px 0 9px 6px}
+#trailMap .trail-resume{min-height:38px;padding:9px 12px}
+@media(max-width:760px){.trail-hud{left:10px;top:81px}.trail-selectors{grid-template-columns:repeat(2,minmax(0,1fr))}#trailMap{padding:16px}.trail-chart{height:clamp(205px,34vh,350px)}}
+@media(max-height:510px) and (orientation:landscape){.trail-hud{top:69px}.trail-chart{height:200px}#trailMap{max-height:94dvh}.trail-selectors{grid-template-columns:repeat(4,minmax(0,1fr))}}
