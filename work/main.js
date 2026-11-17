@@ -366,6 +366,7 @@ async function init(){
   studio.add(aircraft);ready=true;park();sizeView(true);fitStudio();
   byId('loading').hidden=true;byId('launch').disabled=false;new ResizeObserver(()=>sizeView()).observe(area);
   if(historyOpen)drawHistory();
+  else if(new URLSearchParams(location.search).get('fly')==='1')fly();
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();if(mode==='flight'&&phase==='running')setPhase('paused');showFailure(new Error('WebGL context lost'));});
   renderer.setAnimationLoop(now=>{
     if(!ready)return;const dt=Math.min(.12,Math.max(0,(now-clockPrev)/1000));clockPrev=now;

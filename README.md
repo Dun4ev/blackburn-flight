@@ -4,6 +4,8 @@
 
 Fly a 1912 Blackburn Type D through four rings to discover photographs and stories of the surviving aeroplane. Start in the tower district, follow the mini-map, and select a chapter when you want to pause and read. English and Russian, with keyboard and touch controls.
 
+[Start in flight on approach to the first ring](https://blackburn-flight.andreydunaev1.workers.dev/?fly=1).
+
 ![Blackburn approaching a ring in the tower district](assets/flight-preview.jpg)
 
 Built with GPT-6.2 Astra. Andrej Dunaev created the project using OpenAI Codex, Blender and Three.js. This is an interpretive reconstruction with a fictional landscape and simplified flight dynamics. The [photograph credits](assets/history/CREDITS.md) identify the photographers and the licences of the images.
